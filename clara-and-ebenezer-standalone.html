@@ -1,0 +1,3740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ebenezer & Clara 💖 Distance Means So Little</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg-dark: #0a0410;
+  --bg-gradient: radial-gradient(circle at 50% 10%, #2d0928 0%, #15051a 45%, #07010a 100%);
+  --rose-primary: #ff4d6d;
+  --rose-secondary: #ff758f;
+  --rose-light: #ffccd5;
+  --gold-accent: #fcd34d;
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+  --text-main: #fff5f7;
+  --text-dim: #d1b4c4;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-dark);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  user-select: none;
+}
+
+/* Background Ambient Canvas */
+#ambientCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Real-Time Sync Sticky Status Bar */
+.sync-status-bar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(10, 4, 16, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 77, 109, 0.25);
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 150;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--rose-light);
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+  animation: pulseDot 1.6s infinite ease-in-out;
+}
+
+.pulse-dot.connected {
+  background: #10b981;
+  box-shadow: 0 0 12px #10b981;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mini-sync-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.mini-sync-btn:hover {
+  background: rgba(255, 77, 109, 0.25);
+  border-color: var(--rose-primary);
+}
+
+.mini-sync-btn.highlight {
+  background: linear-gradient(135deg, var(--rose-primary), #ec4899);
+  border: none;
+  box-shadow: 0 2px 10px rgba(255, 77, 109, 0.4);
+}
+
+.mini-sync-btn.highlight:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.6);
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 77, 109, 0.3);
+}
+
+/* Top Action Controls */
+.top-controls {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  z-index: 100;
+}
+
+.glass-pill-btn {
+  background: rgba(20, 8, 28, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  color: var(--text-main);
+  padding: 0.6rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55);
+}
+
+.glass-pill-btn:hover {
+  background: rgba(255, 77, 109, 0.3);
+  border-color: var(--rose-primary);
+  transform: translateY(-2px);
+}
+
+.glass-pill-btn.playing {
+  background: rgba(255, 77, 109, 0.4);
+  border-color: var(--rose-light);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+}
+
+/* Main Container */
+.main-container {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.8rem;
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.heart-pulse-container {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.heart-emoji {
+  font-size: 3.2rem;
+  animation: heartbeat 1.4s infinite ease-in-out;
+  filter: drop-shadow(0 0 25px rgba(255, 77, 109, 0.6));
+  z-index: 2;
+  cursor: pointer;
+}
+
+.pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 77, 109, 0.5);
+  animation: wave 2.5s infinite cubic-bezier(0.2, 0.6, 0.35, 1);
+}
+
+.pulse-ring.delay-1 { animation-delay: 0.8s; }
+.pulse-ring.delay-2 { animation-delay: 1.6s; }
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.18); }
+  70% { transform: scale(1); }
+}
+
+@keyframes wave {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.romantic-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  background: linear-gradient(135deg, #ffffff 15%, #ffccd5 55%, var(--gold-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--text-dim);
+  max-width: 540px;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   WOW FEATURE 1: Shared Love Battery
+   -------------------------------------------------------------------------- */
+.love-battery-container {
+  width: 100%;
+  padding: 1.4rem 1.6rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.battery-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.battery-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--rose-light);
+}
+
+.battery-percent {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #34d399;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+}
+
+.battery-bar-track {
+  width: 100%;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.battery-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ec4899, #10b981);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.7);
+}
+
+.battery-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.charge-btn {
+  background: linear-gradient(135deg, rgba(255, 77, 109, 0.25), rgba(236, 72, 153, 0.25));
+  border: 1px solid var(--rose-primary);
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.charge-btn:hover {
+  background: var(--rose-primary);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
+}
+
+/* Distance Radar Card */
+.distance-radar-card {
+  width: 100%;
+  padding: 1.6rem 1.4rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.radar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+}
+
+.radar-live-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.dual-time-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.person-time-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.person-avatar {
+  font-size: 2.2rem;
+  margin-bottom: 0.1rem;
+}
+
+.person-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #fff;
+}
+
+.person-time {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold-accent);
+}
+
+.person-status {
+  font-size: 0.75rem;
+  color: var(--rose-light);
+  opacity: 0.8;
+}
+
+.distance-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  position: relative;
+  flex: 1;
+  max-width: 200px;
+}
+
+.bridge-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--rose-primary), transparent);
+  position: relative;
+}
+
+.bridge-heart {
+  font-size: 1.1rem;
+  animation: planeFloat 2.5s infinite ease-in-out alternate;
+}
+
+@keyframes planeFloat {
+  0% { transform: translateX(-15px); }
+  100% { transform: translateX(15px); }
+}
+
+.bridge-text {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Counter Card */
+.counter-card {
+  width: 100%;
+  padding: 1.75rem 1.5rem;
+}
+
+.counter-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--rose-light);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+}
+
+.icon-sparkle {
+  color: var(--rose-primary);
+  width: 18px;
+  height: 18px;
+}
+
+.countdown-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+  padding: 0.6rem 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.time-num {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+}
+
+.time-label {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.2rem;
+}
+
+.time-separator {
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 1rem;
+}
+
+.counter-footer {
+  margin-top: 1.2rem;
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.35rem;
+  color: var(--gold-accent);
+}
+
+/* Section Common Styling */
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(255, 77, 109, 0.15);
+  color: var(--rose-light);
+  border: 1px solid rgba(255, 77, 109, 0.3);
+  margin-bottom: 0.3rem;
+}
+
+.section-badge.live-glow { background: rgba(236, 72, 153, 0.2); border-color: #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); }
+.section-badge.photo-glow { background: rgba(251, 146, 60, 0.2); border-color: #fb923c; box-shadow: 0 0 15px rgba(251, 146, 60, 0.3); color: #fed7aa; }
+.section-badge.wheel-glow { background: rgba(168, 85, 247, 0.2); border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); color: #e9d5ff; }
+.section-badge.star-glow { background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); color: #bae6fd; }
+.section-badge.funny-glow { background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); color: #fde68a; }
+.section-badge.game-glow { background: rgba(139, 92, 246, 0.2); border-color: #8b5cf6; box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); color: #c4b5fd; }
+
+.section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.3rem);
+  font-weight: 600;
+}
+
+.section-desc {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  max-width: 520px;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   WOW FEATURE 2: 3D Flip Polaroid Gallery
+   -------------------------------------------------------------------------- */
+.polaroid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  perspective: 1200px;
+  margin-top: 1rem;
+}
+
+.polaroid-card {
+  height: 330px;
+  cursor: pointer;
+  perspective: 1200px;
+  transition: transform 0.3s ease;
+}
+
+.polaroid-card.tilt-left { transform: rotate(-3deg); }
+.polaroid-card.tilt-right { transform: rotate(3deg); }
+
+.polaroid-card:hover {
+  transform: rotate(0deg) scale(1.04) translateY(-8px);
+  z-index: 10;
+}
+
+.polaroid-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.polaroid-card.flipped .polaroid-inner {
+  transform: rotateY(180deg);
+}
+
+.polaroid-front, .polaroid-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 12px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6);
+  padding: 1rem 1rem 1.4rem 1rem;
+}
+
+.polaroid-front {
+  background: #fdfaf7;
+  color: #1e1119;
+  display: flex;
+  flex-direction: column;
+}
+
+.polaroid-pin {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4));
+  z-index: 5;
+}
+
+.polaroid-img-wrapper {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111;
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.polaroid-card:hover .polaroid-img {
+  transform: scale(1.08);
+}
+
+.polaroid-caption {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 0.9rem;
+  color: #831843;
+}
+
+.polaroid-back {
+  background: linear-gradient(135deg, #2b0e27, #19061d);
+  border: 1px solid rgba(255, 77, 109, 0.4);
+  color: #fff;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  gap: 0.8rem;
+}
+
+.back-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem;
+  color: var(--rose-light);
+}
+
+.back-text {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.back-date {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.2rem;
+  color: var(--gold-accent);
+}
+
+/* --------------------------------------------------------------------------
+   WOW FEATURE 3: Date Night Fortune Wheel
+   -------------------------------------------------------------------------- */
+.wheel-container {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: 15px;
+  font-size: 2rem;
+  color: var(--gold-accent);
+  z-index: 20;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+}
+
+.wheel-spinner {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 8px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 35px rgba(255, 77, 109, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1);
+}
+
+.wheel-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background: var(--clr);
+  transform-origin: bottom right;
+  transform: rotate(calc(60deg * var(--i))) skewY(30deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wheel-segment span {
+  position: absolute;
+  left: 20px;
+  top: 30px;
+  transform: skewY(-30deg) rotate(15deg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  white-space: nowrap;
+}
+
+.spin-wheel-btn {
+  z-index: 5;
+}
+
+.wheel-result {
+  animation: fadeIn 0.4s ease;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  background: rgba(255, 77, 109, 0.2);
+  border: 1px solid var(--rose-primary);
+}
+
+.wheel-result h3 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  color: var(--gold-accent);
+}
+
+/* --------------------------------------------------------------------------
+   WOW FEATURE 4: Interactive Star Constellation
+   -------------------------------------------------------------------------- */
+.constellation-box {
+  width: 100%;
+  height: 360px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+#starMapCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.star-tooltip {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 4, 16, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #bae6fd;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  pointer-events: none;
+  font-family: 'Playfair Display', Georgia, serif;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+/* --------------------------------------------------------------------------
+   WOW FEATURE 5: Cinematic Romantic Theater Overlay
+   -------------------------------------------------------------------------- */
+.cinematic-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #050108;
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.cinematic-overlay.active {
+  display: flex;
+  animation: cinemaFadeIn 1s ease forwards;
+}
+
+@keyframes cinemaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.close-cinematic-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 505;
+}
+
+.close-cinematic-btn:hover {
+  background: var(--rose-primary);
+}
+
+.cinema-content {
+  max-width: 680px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 502;
+}
+
+.cinema-heart {
+  font-size: 4rem;
+  animation: heartbeat 1.4s infinite ease-in-out;
+  filter: drop-shadow(0 0 30px rgba(255, 77, 109, 0.8));
+}
+
+.cinema-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--gold-accent);
+  text-shadow: 0 0 25px rgba(252, 211, 77, 0.6);
+}
+
+.cinema-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.2rem, 3.2vw, 1.8rem);
+  color: #fff5f7;
+  line-height: 1.6;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cinema-progress-bar {
+  width: 100%;
+  max-width: 380px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.cinema-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--rose-primary), var(--gold-accent));
+  transition: width 0.3s linear;
+}
+
+/* --------------------------------------------------------------------------
+   Heartbeat Hold Pad
+   -------------------------------------------------------------------------- */
+.heartbeat-hold-pad {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 30px;
+}
+
+.pad-glow-ring {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 77, 109, 0.35) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.pad-center-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 2;
+}
+
+.pad-emoji {
+  font-size: 4.5rem;
+  transition: transform 0.15s ease;
+  filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.4));
+}
+
+.pad-instruction {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--rose-light);
+  letter-spacing: 0.04em;
+}
+
+.heartbeat-hold-pad.holding .pad-glow-ring {
+  opacity: 1;
+  animation: heartbeatPadRing 0.8s infinite ease-in-out;
+}
+
+.heartbeat-hold-pad.holding .pad-emoji {
+  transform: scale(1.25);
+  animation: rapidBeat 0.75s infinite ease-in-out;
+}
+
+.partner-pulse-notification {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #34d399;
+  font-weight: 600;
+}
+
+.partner-pulse-notification.active {
+  display: flex;
+  animation: pulseGlow 1s infinite alternate;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+}
+
+@keyframes rapidBeat {
+  0% { transform: scale(1.1); }
+  20% { transform: scale(1.35); }
+  40% { transform: scale(1.15); }
+  60% { transform: scale(1.32); }
+  100% { transform: scale(1.1); }
+}
+
+@keyframes heartbeatPadRing {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Nudges Grid */
+.nudges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.nudge-btn {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 1.25rem 1rem;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nudge-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255, 77, 109, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.nudge-btn:active {
+  transform: scale(0.96);
+}
+
+.nudge-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.nudge-btn strong {
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.nudge-btn small {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.kiss-nudge:hover { background: rgba(255, 77, 109, 0.15); border-color: #ff4d6d; }
+.siren-nudge:hover { background: rgba(239, 68, 68, 0.15); border-color: #ef4444; }
+.tickle-nudge:hover { background: rgba(168, 85, 247, 0.15); border-color: #a855f7; }
+.drama-nudge:hover { background: rgba(245, 158, 11, 0.15); border-color: #f59e0b; }
+
+/* Telepathy Card */
+.telepathy-card {
+  width: 100%;
+  padding: 2.2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.quiz-question-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.quiz-index {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-accent);
+  font-weight: 700;
+}
+
+.quiz-question {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.quiz-options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.quiz-opt-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 0.9rem 1.25rem;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.quiz-opt-btn:hover {
+  background: rgba(255, 77, 109, 0.2);
+  border-color: var(--rose-primary);
+  transform: translateY(-2px);
+}
+
+.quiz-opt-btn.selected {
+  background: linear-gradient(135deg, var(--rose-primary), #ec4899);
+  border-color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.5);
+}
+
+.quiz-status-reveal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  animation: fadeIn 0.4s ease;
+}
+
+.reveal-answers {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.reveal-box {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.8rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex: 1;
+}
+
+.reveal-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+
+.reveal-choice {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.reveal-vs {
+  font-size: 1.5rem;
+}
+
+.reveal-verdict {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.45rem;
+  color: var(--gold-accent);
+}
+
+.next-q-btn {
+  align-self: center;
+}
+
+/* Nudge Modal / Alert */
+.nudge-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.nudge-overlay.active {
+  display: flex;
+}
+
+.nudge-modal {
+  width: 100%;
+  max-width: 420px;
+  background: #190924;
+  border: 2px solid var(--rose-primary);
+  padding: 2.2rem 1.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.nudge-modal-icon {
+  font-size: 4rem;
+  animation: pulseIcon 1s infinite alternate;
+}
+
+@keyframes pulseIcon {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.2); }
+}
+
+.nudge-modal-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.8rem;
+  color: #fff;
+}
+
+.nudge-modal-text {
+  color: var(--rose-light);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+body.screen-shake {
+  animation: shakeEffect 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes shakeEffect {
+  0% { transform: translate(3px, 1px) rotate(0.5deg); }
+  25% { transform: translate(-3px, -2px) rotate(-0.5deg); }
+  50% { transform: translate(-4px, 1px) rotate(0deg); }
+  75% { transform: translate(3px, 2px) rotate(-0.5deg); }
+  100% { transform: translate(1px, -2px) rotate(0.5deg); }
+}
+
+body.siren-active {
+  animation: sirenFlash 0.8s infinite;
+}
+
+@keyframes sirenFlash {
+  0%, 100% { background-color: #0d0614; }
+  50% { background-color: #450a0a; }
+}
+
+/* Role Selector Modal */
+.role-selector-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.role-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.role-card:hover {
+  border-color: var(--rose-primary);
+  background: rgba(255, 77, 109, 0.15);
+  transform: translateY(-3px);
+}
+
+.role-card.active {
+  border-color: var(--rose-primary);
+  background: rgba(255, 77, 109, 0.25);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
+}
+
+.role-icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.role-card h4 {
+  font-size: 1.15rem;
+  margin-bottom: 0.3rem;
+}
+
+.role-card p {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+
+/* Envelope & Letter */
+.envelope-wrapper {
+  perspective: 1000px;
+  padding-top: 1rem;
+  width: 100%;
+  max-width: 440px;
+  height: 380px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.envelope {
+  position: relative;
+  width: 340px;
+  height: 220px;
+  background: linear-gradient(145deg, #a21caf, #be185d);
+  border-radius: 8px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+
+.envelope:hover {
+  transform: translateY(-4px);
+}
+
+.envelope-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #831843;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.letter-preview {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  width: 310px;
+  min-height: 200px;
+  background: #fffdfa;
+  border-radius: 6px;
+  padding: 1.5rem 1.25rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #2b111d;
+  text-align: left;
+  transform: translateY(0);
+}
+
+.envelope.open .letter-preview {
+  transform: translateY(-160px);
+  z-index: 6;
+  min-height: 260px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.letter-dear {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  color: #9d174d;
+  margin-bottom: 0.75rem;
+}
+
+.letter-body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4a2034;
+}
+
+.letter-signature {
+  margin-top: 1.2rem;
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.3rem;
+  color: #9d174d;
+  text-align: right;
+}
+
+.envelope-left-flap {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 110px 0 110px 170px;
+  border-color: transparent transparent transparent #be185d;
+  z-index: 3;
+  border-bottom-left-radius: 8px;
+}
+
+.envelope-right-flap {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 110px 170px 110px 0;
+  border-color: transparent #c026d3 transparent transparent;
+  z-index: 3;
+  border-bottom-right-radius: 8px;
+}
+
+.envelope-bottom-flap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 170px 130px 170px;
+  border-color: transparent transparent #9d174d transparent;
+  z-index: 4;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.envelope-top-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 130px 170px 0 170px;
+  border-color: #db2777 transparent transparent transparent;
+  z-index: 5;
+  transform-origin: top center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.envelope.open .envelope-top-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+.wax-seal {
+  position: absolute;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, #f43f5e 40%, #881337 100%);
+  border-radius: 50%;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+.wax-seal span {
+  font-size: 1.4rem;
+}
+
+.wax-seal small {
+  font-size: 0.5rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.envelope.open .wax-seal {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reasons Jar */
+.love-jar-container {
+  width: 100%;
+}
+
+.jar-card {
+  padding: 2.2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.jar-icon-wrap {
+  position: relative;
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.jar-icon-wrap:hover {
+  transform: scale(1.1) rotate(-4deg);
+}
+
+.jar-icon {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 20px rgba(252, 211, 77, 0.4));
+}
+
+.jar-sparkles {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1.5rem;
+  animation: sparkleRotate 2s infinite linear;
+}
+
+@keyframes sparkleRotate {
+  0% { transform: scale(0.8) rotate(0deg); opacity: 0.6; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0.8) rotate(360deg); opacity: 0.6; }
+}
+
+.quote-display {
+  min-height: 85px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.quote-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.8vw, 1.35rem);
+  color: var(--rose-light);
+  line-height: 1.5;
+  max-width: 550px;
+  transition: opacity 0.3s ease;
+}
+
+.quote-counter {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.action-btn {
+  background: linear-gradient(135deg, var(--rose-primary), #d946ef);
+  border: none;
+  border-radius: 9999px;
+  color: #fff;
+  padding: 0.75rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
+  transition: all 0.25s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(255, 77, 109, 0.6);
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+/* Coupons */
+.coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.coupon-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  border: 1px dashed rgba(255, 77, 109, 0.35);
+  border-radius: 18px;
+  padding: 1.5rem 1.25rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.coupon-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--rose-secondary);
+}
+
+.coupon-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.coupon-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.coupon-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.coupon-desc {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.coupon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+  padding: 0.55rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+}
+
+.coupon-btn:hover {
+  background: var(--rose-primary);
+  border-color: var(--rose-primary);
+}
+
+.coupon-card.redeemed {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.85;
+}
+
+.coupon-card.redeemed .coupon-btn {
+  pointer-events: none;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+}
+
+.redeemed-stamp {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  border: 3px double #ef4444;
+  color: #ef4444;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transform: rotate(-12deg);
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  animation: stampIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes stampIn {
+  0% { transform: scale(2) rotate(-30deg); opacity: 0; }
+  100% { transform: scale(1) rotate(-12deg); opacity: 1; }
+}
+
+/* Playful Question Card */
+.playful-card {
+  padding: 2.75rem 1.75rem;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.bubble-heart {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.playful-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.playful-text {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+}
+
+.choice-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  position: relative;
+  min-height: 60px;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: 9999px;
+  color: #fff;
+  padding: 0.85rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 5;
+}
+
+.yes-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.6);
+}
+
+.no-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-dim);
+  padding: 0.85rem 1.8rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 5;
+}
+
+.celebration-msg {
+  display: none;
+  margin-top: 1.5rem;
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.7rem;
+  color: var(--gold-accent);
+  text-shadow: 0 0 15px rgba(252, 211, 77, 0.5);
+  animation: fadeIn 0.5s ease;
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  padding-bottom: 2rem;
+}
+
+.app-footer strong {
+  color: #fff;
+}
+
+.app-footer small {
+  display: block;
+  margin-top: 0.5rem;
+  opacity: 0.6;
+}
+
+/* Modal Styling */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 500px;
+  background: #170921;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1.75rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.icon-rose {
+  color: var(--rose-primary);
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: #fff;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  text-align: left;
+}
+
+.modal-body label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--rose-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-body input,
+.modal-body textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.modal-body input:focus,
+.modal-body textarea:focus {
+  outline: none;
+  border-color: var(--rose-primary);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-dim);
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+/* Mobile responsiveness adjustments */
+@media (max-width: 480px) {
+  .sync-status-bar {
+    padding: 0.5rem 0.8rem;
+  }
+  .status-indicator {
+    font-size: 0.75rem;
+  }
+  .top-controls {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .main-container {
+    padding-top: 1.5rem;
+    gap: 2.75rem;
+  }
+  .wheel-spinner {
+    width: 240px;
+    height: 240px;
+  }
+  .envelope-wrapper {
+    height: 340px;
+  }
+  .envelope {
+    width: 290px;
+    height: 190px;
+  }
+  .letter-preview {
+    width: 265px;
+  }
+  .envelope.open .letter-preview {
+    transform: translateY(-135px);
+  }
+  .countdown-grid {
+    gap: 0.35rem;
+  }
+  .time-block {
+    min-width: 58px;
+    padding: 0.4rem;
+  }
+  .dual-time-display {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .distance-bridge {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+</style>
+  
+  <!-- PeerJS for Real-Time Cross-Continent WebRTC Sync -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <!-- Ambient Sparkle / Hearts Canvas -->
+  <canvas id="ambientCanvas"></canvas>
+
+  <!-- Real-Time Sync Sticky Status Bar -->
+  <div class="sync-status-bar" id="syncStatusBar">
+    <div class="status-indicator">
+      <span class="pulse-dot" id="syncDot"></span>
+      <span id="syncStatusText">Connecting to Clara...</span>
+    </div>
+    <div class="sync-actions">
+      <button class="mini-sync-btn" id="cinematicBtn" title="Play Cinematic Romantic Experience">
+        <i data-lucide="sparkles"></i> <span>Cinematic Mode 🎬</span>
+      </button>
+      <button class="mini-sync-btn" id="whoAmIBtn" title="Switch between Ebenezer and Clara">
+        <i data-lucide="user"></i> <span id="currentRoleLabel">I am Ebenezer 💙</span>
+      </button>
+      <button class="mini-sync-btn highlight" id="shareLinkBtn" title="Copy magic link for Clara">
+        <i data-lucide="share-2"></i> <span>Send to Clara</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Audio & Customization Controls -->
+  <div class="top-controls">
+    <button id="musicToggleBtn" class="glass-pill-btn" title="Toggle Romantic Music Box">
+      <i data-lucide="music"></i>
+      <span id="musicStatusText">Play Melody</span>
+    </button>
+    <button id="customizeBtn" class="glass-pill-btn" title="Customize Settings">
+      <i data-lucide="settings"></i>
+      <span>Settings</span>
+    </button>
+  </div>
+
+  <main class="main-container">
+    <!-- Header / Hero Section -->
+    <header class="hero-section">
+      <div class="heart-pulse-container" id="heartPulse">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring delay-1"></div>
+        <div class="pulse-ring delay-2"></div>
+        <span class="heart-emoji">💖</span>
+      </div>
+      <h1 class="romantic-title">
+        <span id="partnerGreeting">Ebenezer & Clara</span>
+      </h1>
+      <p class="subtitle" id="heroSubtitle">Distance means so little when someone means so much.</p>
+
+      <!-- WOW FEATURE 1: Shared Love Battery -->
+      <div class="love-battery-container glass-panel">
+        <div class="battery-info">
+          <div class="battery-title">
+            <i data-lucide="zap" class="icon-sparkle"></i>
+            <span>Shared Love Connection Battery</span>
+          </div>
+          <span class="battery-percent" id="batteryPercent">98%</span>
+        </div>
+        <div class="battery-bar-track">
+          <div class="battery-bar-fill" id="batteryFill" style="width: 98%;"></div>
+        </div>
+        <div class="battery-footer">
+          <span id="batteryStatusText">⚡ Charged with unconditional devotion</span>
+          <button class="charge-btn" id="chargeHeartBtn" onclick="chargeLoveBattery()">
+            <span>Supercharge (+5% Hug)</span> 💕
+          </button>
+        </div>
+      </div>
+
+      <!-- Distance Radar / Same Sky -->
+      <div class="distance-radar-card glass-panel">
+        <div class="radar-header">
+          <span>🌍 Under The Same Moon</span>
+          <span class="radar-live-badge">REAL-TIME LINKED</span>
+        </div>
+        <div class="dual-time-display">
+          <div class="person-time-box">
+            <span class="person-avatar">🧔🏾‍♂️</span>
+            <span class="person-name">Ebenezer</span>
+            <span class="person-time" id="ebenezerTime">--:--</span>
+            <span class="person-status" id="ebenezerStatus">Online & Missing Clara</span>
+          </div>
+          <div class="distance-bridge">
+            <div class="bridge-line"></div>
+            <span class="bridge-heart">✈️ 💕</span>
+            <span class="bridge-text" id="distanceText">Miles Apart, Zero In Heart</span>
+          </div>
+          <div class="person-time-box">
+            <span class="person-avatar">👸🏽</span>
+            <span class="person-name">Clara</span>
+            <span class="person-time" id="claraTime">--:--</span>
+            <span class="person-status" id="claraStatus">Waiting for connection...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Relationship Live Counter -->
+      <div class="counter-card glass-panel">
+        <div class="counter-header">
+          <i data-lucide="clock" class="icon-sparkle"></i>
+          <span id="counterTitle">Every Second Our Love Grows</span>
+        </div>
+        <div class="countdown-grid" id="countdownGrid">
+          <div class="time-block">
+            <span class="time-num" id="daysCount">0</span>
+            <span class="time-label">Days</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-block">
+            <span class="time-num" id="hoursCount">00</span>
+            <span class="time-label">Hours</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-block">
+            <span class="time-num" id="minutesCount">00</span>
+            <span class="time-label">Mins</span>
+          </div>
+          <div class="time-separator">:</div>
+          <div class="time-block">
+            <span class="time-num" id="secondsCount">00</span>
+            <span class="time-label">Secs</span>
+          </div>
+        </div>
+        <p class="counter-footer" id="counterFooter">"Even oceans cannot drown what we have built."</p>
+      </div>
+    </header>
+
+    <!-- REAL-TIME FEATURE: Live Heartbeat Touchpad -->
+    <section class="section real-time-section">
+      <div class="section-badge live-glow">Live Touchpad</div>
+      <h2 class="section-title">The Real-Time Heartbeat Hold</h2>
+      <p class="section-desc">Press and hold your finger or mouse on the glowing heart. When you hold it, Clara will literally feel & hear your heart pulsing on her screen in real-time!</p>
+
+      <div class="heartbeat-hold-pad glass-panel" id="heartbeatPad">
+        <div class="pad-glow-ring" id="padGlow"></div>
+        <div class="pad-center-btn" id="padBtn">
+          <span class="pad-emoji">💓</span>
+          <span class="pad-instruction" id="padStatus">Hold to Send Heartbeat</span>
+        </div>
+        <div class="partner-pulse-notification" id="partnerPulseNotice">
+          <span class="live-dot"></span> <span id="partnerPulseMsg">Clara is holding your heart right now...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- WOW FEATURE 2: 3D Flip Polaroid Memory Wall -->
+    <section class="section polaroid-section">
+      <div class="section-badge photo-glow">Our Core Memories</div>
+      <h2 class="section-title">The Polaroid Memory Gallery 📸</h2>
+      <p class="section-desc">Tap any photo to flip it over and read the handwritten secret memory on the back!</p>
+
+      <div class="polaroid-grid" id="polaroidGrid">
+        <!-- Card 1 -->
+        <div class="polaroid-card" onclick="flipPolaroid(this)">
+          <div class="polaroid-inner">
+            <div class="polaroid-front">
+              <div class="polaroid-pin">📌</div>
+              <div class="polaroid-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&auto=format&fit=crop&q=80" alt="Memory" class="polaroid-img" />
+              </div>
+              <p class="polaroid-caption">The Day Everything Changed ✨</p>
+            </div>
+            <div class="polaroid-back">
+              <h4 class="back-title">When We First Met</h4>
+              <p class="back-text">"I didn't know it back then, but the moment I heard your laugh, my soul whispered: 'She's the one.'"</p>
+              <span class="back-date">Core Memory #01 ❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="polaroid-card tilt-right" onclick="flipPolaroid(this)">
+          <div class="polaroid-inner">
+            <div class="polaroid-front">
+              <div class="polaroid-pin">🌸</div>
+              <div class="polaroid-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&auto=format&fit=crop&q=80" alt="FaceTime" class="polaroid-img" />
+              </div>
+              <p class="polaroid-caption">Falling Asleep on Call 🌙</p>
+            </div>
+            <div class="polaroid-back">
+              <h4 class="back-title">Late Night Whispers</h4>
+              <p class="back-text">"Hours felt like minutes. Listening to you fall asleep peacefully while the world went quiet is my favorite therapy."</p>
+              <span class="back-date">Core Memory #02 ❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="polaroid-card tilt-left" onclick="flipPolaroid(this)">
+          <div class="polaroid-inner">
+            <div class="polaroid-front">
+              <div class="polaroid-pin">✈️</div>
+              <div class="polaroid-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80" alt="Reunion" class="polaroid-img" />
+              </div>
+              <p class="polaroid-caption">The Countdown to Airport Hugs 🥂</p>
+            </div>
+            <div class="polaroid-back">
+              <h4 class="back-title">Our Next Chapter</h4>
+              <p class="back-text">"When the flight lands and I see your smile at arrivals, I'm hugging you so tight the entire airport will stare."</p>
+              <span class="back-date">Future Promise #03 💍</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WOW FEATURE 3: Date Night Fortune Wheel -->
+    <section class="section wheel-section">
+      <div class="section-badge wheel-glow">Fun & Games</div>
+      <h2 class="section-title">The Wheel of Romance 🎡</h2>
+      <p class="section-desc">Can't decide what to do on our next call or reunion? Spin the wheel and let fate decide!</p>
+
+      <div class="wheel-container glass-panel">
+        <div class="wheel-pointer">▼</div>
+        <div class="wheel-spinner" id="romanticWheel">
+          <div class="wheel-segment" style="--i:0; --clr:#ff4d6d;"><span>Video Dinner 🍕</span></div>
+          <div class="wheel-segment" style="--i:1; --clr:#a855f7;"><span>Truth or Dare 🎭</span></div>
+          <div class="wheel-segment" style="--i:2; --clr:#ec4899;"><span>Serenade Song 🎶</span></div>
+          <div class="wheel-segment" style="--i:3; --clr:#f59e0b;"><span>Massage Ticket 💆</span></div>
+          <div class="wheel-segment" style="--i:4; --clr:#10b981;"><span>Movie Choice 🎬</span></div>
+          <div class="wheel-segment" style="--i:5; --clr:#3b82f6;"><span>Deep Secret 🤫</span></div>
+        </div>
+        <button class="action-btn spin-wheel-btn" id="spinWheelBtn" onclick="spinRomanticWheel()">
+          <i data-lucide="rotate-cw"></i> <span>Spin The Wheel!</span>
+        </button>
+        <div class="wheel-result" id="wheelResult" style="display: none;">
+          <h3 id="wheelResultText">You won a Video Dinner Date!</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- WOW FEATURE 4: Interactive Star Constellation -->
+    <section class="section constellation-section">
+      <div class="section-badge star-glow">Our Universe</div>
+      <h2 class="section-title">The "Ebenezer & Clara" Constellation ✨</h2>
+      <p class="section-desc">Hover or tap the glowing stars in our private galaxy to reveal our secret promises.</p>
+
+      <div class="constellation-box glass-panel" id="constellationBox">
+        <canvas id="starMapCanvas"></canvas>
+        <div class="star-tooltip" id="starTooltip">Tap any star in our galaxy</div>
+      </div>
+    </section>
+
+    <!-- REAL-TIME FEATURE: Funny Long-Distance Flirty Nudges -->
+    <section class="section funny-nudges-section">
+      <div class="section-badge funny-glow">Playful Chaos</div>
+      <h2 class="section-title">Long-Distance Attack Station 🚀</h2>
+      <p class="section-desc">Tap any button to trigger an instant funny reaction directly on your love's screen!</p>
+
+      <div class="nudges-grid">
+        <button class="nudge-btn kiss-nudge" onclick="sendRealtimeNudge('kiss')">
+          <span class="nudge-icon">💋</span>
+          <strong>Kiss Attack</strong>
+          <small>Floods her screen with 50 smooches</small>
+        </button>
+        <button class="nudge-btn siren-nudge" onclick="sendRealtimeNudge('siren')">
+          <span class="nudge-icon">🚨</span>
+          <strong>Cuddle Emergency</strong>
+          <small>Triggers red sirens: Urgent hugs required!</small>
+        </button>
+        <button class="nudge-btn tickle-nudge" onclick="sendRealtimeNudge('tickle')">
+          <span class="nudge-icon">🪶</span>
+          <strong>Virtual Tickle</strong>
+          <small>Shakes her entire phone screen</small>
+        </button>
+        <button class="nudge-btn drama-nudge" onclick="sendRealtimeNudge('drama')">
+          <span class="nudge-icon">🎭</span>
+          <strong>Drama Alert</strong>
+          <small>"Stop being cute, I'm trying to focus!"</small>
+        </button>
+      </div>
+    </section>
+
+    <!-- REAL-TIME FEATURE: Couples Live Telepathy Game -->
+    <section class="section telepathy-section">
+      <div class="section-badge game-glow">Couples Challenge</div>
+      <h2 class="section-title">The Telepathy Test 🧠✨</h2>
+      <p class="section-desc">Answer simultaneously! Neither of you can see the other's answer until you both choose. Are your souls in sync?</p>
+
+      <div class="telepathy-card glass-panel" id="telepathyCard">
+        <div class="quiz-question-box">
+          <span class="quiz-index" id="quizQuestionIndex">Question 1 of 5</span>
+          <h3 class="quiz-question" id="quizQuestionText">Who is guaranteed to take longer getting ready for a date?</h3>
+        </div>
+
+        <div class="quiz-options-grid" id="quizOptionsGrid">
+          <button class="quiz-opt-btn" onclick="submitQuizAnswer(0)">Ebenezer 🧔🏾‍♂️</button>
+          <button class="quiz-opt-btn" onclick="submitQuizAnswer(1)">Clara 👸🏽</button>
+          <button class="quiz-opt-btn" onclick="submitQuizAnswer(2)">Both are equally guilty 🙈</button>
+        </div>
+
+        <div class="quiz-status-reveal" id="quizRevealBox" style="display: none;">
+          <div class="reveal-answers">
+            <div class="reveal-box">
+              <span class="reveal-label">Ebenezer picked:</span>
+              <span class="reveal-choice" id="ebenezerChoice">--</span>
+            </div>
+            <div class="reveal-vs">⚡</div>
+            <div class="reveal-box">
+              <span class="reveal-label">Clara picked:</span>
+              <span class="reveal-choice" id="claraChoice">Waiting...</span>
+            </div>
+          </div>
+          <p class="reveal-verdict" id="revealVerdict">Analyzing soulmate telepathy...</p>
+          <button class="action-btn next-q-btn" id="nextQuizBtn" onclick="nextQuizQuestion()">Next Question ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Envelope (Wax-Sealed Love Letter) -->
+    <section class="section envelope-section">
+      <div class="section-badge">To Clara From Ebenezer</div>
+      <h2 class="section-title">A Letter Written For You</h2>
+      
+      <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="envelope" id="envelope">
+          <div class="envelope-back"></div>
+          <div class="letter-preview" id="letterPaper">
+            <div class="letter-content">
+              <h3 class="letter-dear" id="letterDear">My Beautiful Clara,</h3>
+              <p class="letter-body" id="letterBody">
+                Distance is just a test to see how far love can travel. No matter how many miles lie between us, you are the first thought in my morning and the sweetest thought in my night. Every day apart is one day closer to holding you tight and never letting go.
+              </p>
+              <p class="letter-signature" id="letterSignature">With All My Soul, Ebenezer ❤️</p>
+            </div>
+          </div>
+          <div class="envelope-top-flap" id="envelopeFlap"></div>
+          <div class="envelope-left-flap"></div>
+          <div class="envelope-right-flap"></div>
+          <div class="envelope-bottom-flap"></div>
+          <div class="wax-seal" id="waxSeal">
+            <span>💌</span>
+            <small>Tap to open</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Magic Jar of Love Notes -->
+    <section class="section notes-jar-section">
+      <div class="section-badge">Endless Love</div>
+      <h2 class="section-title">The "Why I Love Clara" Jar</h2>
+      <p class="section-desc">Whenever you miss me or feel the distance, pull a token from our jar.</p>
+
+      <div class="love-jar-container">
+        <div class="jar-card glass-panel" id="jarCard">
+          <div class="jar-icon-wrap" id="jarIconBtn">
+            <div class="jar-icon">🏺</div>
+            <div class="jar-sparkles">✨</div>
+          </div>
+          <div class="quote-display" id="quoteDisplay">
+            <p class="quote-text" id="quoteText">"Click the jar to unveil a little reason why Ebenezer's heart chose you."</p>
+            <span class="quote-counter" id="quoteCounter">Tokens opened: 0</span>
+          </div>
+          <button class="action-btn" id="pullReasonBtn">
+            <i data-lucide="sparkles"></i>
+            <span>Pull a Reason for Clara</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Romantic Long-Distance Coupons -->
+    <section class="section coupons-section">
+      <div class="section-badge">VIP Privileges</div>
+      <h2 class="section-title">Clara's Distance & Reunion Coupons</h2>
+      <p class="section-desc">Guaranteed redeemable across the miles and on our next reunion day!</p>
+
+      <div class="coupons-grid" id="couponsGrid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Playful Date Proposal / Running Button -->
+    <section class="section question-section">
+      <div class="glass-panel playful-card">
+        <div class="bubble-heart">🌹</div>
+        <h2 class="playful-title">One Very Serious Question, Clara...</h2>
+        <p class="playful-text">Will you promise to never stop being my favorite person and date me forever?</p>
+
+        <div class="choice-container" id="choiceContainer">
+          <button class="yes-btn" id="yesBtn">
+            YES Ebenezer! A million times YES! 💕
+          </button>
+          <button class="no-btn" id="noBtn">
+            No 🙈
+          </button>
+        </div>
+        <div class="celebration-msg" id="celebrationMsg">
+          🎉 YOU SAID YES! Best decision you've ever made! I love you Clara! 🥂✨
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Crafted with endless devotion by <strong>Ebenezer</strong> for his Queen <strong>Clara</strong> 💖</p>
+      <small>Distance is only geographical; our hearts are in the exact same room.</small>
+    </footer>
+  </main>
+
+  <!-- WOW FEATURE 5: Cinematic Romantic Theater Overlay -->
+  <div class="cinematic-overlay" id="cinematicOverlay">
+    <button class="close-cinematic-btn" id="closeCinematicBtn" onclick="stopCinematicMode()">&times; Exit Cinema</button>
+    <div class="cinema-starfield" id="cinemaStarfield"></div>
+    <div class="cinema-content">
+      <div class="cinema-heart">💖</div>
+      <h1 class="cinema-title" id="cinemaTitle">Our Story</h1>
+      <p class="cinema-text" id="cinemaText">Every love story is beautiful, but ours is my favorite...</p>
+      <div class="cinema-progress-bar">
+        <div class="cinema-progress-fill" id="cinemaProgress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incoming Nudge Overlay (FullScreen Flirty Animations) -->
+  <div class="nudge-overlay" id="nudgeOverlay">
+    <div class="nudge-modal glass-panel" id="nudgeModal">
+      <div class="nudge-modal-icon" id="nudgeModalIcon">🚨</div>
+      <h2 class="nudge-modal-title" id="nudgeModalTitle">Cuddle Emergency!</h2>
+      <p class="nudge-modal-text" id="nudgeModalText">Ebenezer sent an urgent hug request!</p>
+      <button class="action-btn" onclick="dismissNudgeOverlay()">Hug Back 💕</button>
+    </div>
+  </div>
+
+  <!-- Role Switch / Setup Modal -->
+  <div class="modal-overlay" id="roleModal">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i data-lucide="heart-handshake" class="icon-rose"></i> Who Is Viewing This?</h3>
+        <button class="close-modal-btn" onclick="toggleRoleModal(false)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-dim); font-size: 0.95rem; margin-bottom: 0.5rem;">
+          Select your identity so the app can connect you and your partner in real-time across devices!
+        </p>
+        <div class="role-selector-cards">
+          <div class="role-card" id="selectEbenezer" onclick="selectRole('ebenezer')">
+            <span class="role-icon">🧔🏾‍♂️</span>
+            <h4>Ebenezer</h4>
+            <p>Send Clara love, heartbeats & nudges</p>
+          </div>
+          <div class="role-card" id="selectClara" onclick="selectRole('clara')">
+            <span class="role-icon">👸🏽</span>
+            <h4>Clara</h4>
+            <p>Receive hugs, kiss attacks & letters</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personalization / Settings Modal -->
+  <div class="modal-overlay" id="customizeModal">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i data-lucide="heart" class="icon-rose"></i> Personalize App Settings</h3>
+        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label>Your Love's Name</label>
+        <input type="text" id="inputPartnerName" value="Clara" />
+
+        <label>Your Name</label>
+        <input type="text" id="inputYourName" value="Ebenezer" />
+
+        <label>Special Date (Anniversary / First Day We Met)</label>
+        <input type="date" id="inputStartDate" />
+
+        <label>Personal Love Letter</label>
+        <textarea id="inputLetterText" rows="4"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" id="resetDefaultsBtn">Reset</button>
+        <button class="action-btn" id="saveCustomizationBtn">Save & Sync</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// Initialize Lucide Icons
+if (window.lucide) {
+  window.lucide.createIcons();
+}
+
+// Default Configuration & Content for Ebenezer & Clara
+const DEFAULT_CONFIG = {
+  partnerName: "Clara",
+  yourName: "Ebenezer",
+  startDate: "2024-02-14",
+  letterText: "My Beautiful Clara, no matter how many miles lie between us, you are the first thought in my morning and the sweetest thought in my night. Every day apart is just one day closer to holding you tight in my arms and never letting go. Distance is small because our love is endless."
+};
+
+// 30 Curated Romantic & Distance Reasons
+const LOVE_REASONS = [
+  "Because out of eight billion people, you are the only one who feels like home.",
+  "The way your laugh over video calls can fix my hardest days in seconds.",
+  "How you still manage to give me butterflies across hundreds of miles.",
+  "Your sweet 'good morning' texts that start my day with a smile.",
+  "The face you make when you're laughing so hard you can barely breathe.",
+  "How deeply loyal, kind, and precious your heart is.",
+  "Because waiting for our next reunion makes every second worth it.",
+  "The quiet comfort of falling asleep together on FaceTime.",
+  "The way you believe in me and push me to be my best self.",
+  "Your gorgeous smile that outshines every star in the sky.",
+  "Because even in silence, just hearing your breath makes me feel peaceful.",
+  "How cute you look when you're telling me about your day.",
+  "The way you hug me when we meet at the airport—best feeling on earth.",
+  "How you always know what to say to calm my restless mind.",
+  "Because my favorite place in the world is right inside your arms.",
+  "Your silly, goofy side that only I get the privilege to witness.",
+  "Because you are not just my love, Clara, you are my best friend.",
+  "The little details you remember about things I said weeks ago.",
+  "The warmth and devotion you put into loving me.",
+  "Because distance only proved how completely unbreakable we are.",
+  "Your cute stubbornness when you pretend you're not sleepy.",
+  "The dream of building our entire future together, side by side.",
+  "Because loving you is the easiest and most natural thing I've ever done.",
+  "Your gentle voice whispering 'I love you' before we sleep.",
+  "The way you make ordinary conversations feel like magic.",
+  "How proud I am to call you my woman and my queen.",
+  "The way our hands fit together like they were sculpted to match.",
+  "Because no matter how far away you are, my heart lives where you are.",
+  "Because you chose me, and I will choose you in every lifetime.",
+  "Simply because you are Clara—the sweetest blessing of my life."
+];
+
+// Long Distance & Reunion Coupons
+const COUPONS = [
+  { id: "coupon-1", icon: "✈️", title: "Airport Reunion Hug", desc: "Non-negotiable 60-second hug the second we see each other at arrivals." },
+  { id: "coupon-2", icon: "🌙", title: "Sleep-On-Call Pass", desc: "Leave the voice or video call on all night until morning, zero excuses." },
+  { id: "coupon-3", icon: "🍕", title: "DoorDash / Dinner on Me", desc: "Redeemable for your favorite dinner ordered straight to your door!" },
+  { id: "coupon-4", icon: "💆", title: "Reunion Full Massage", desc: "Back, neck, and shoulder massage on our reunion day. Unlimited time." },
+  { id: "coupon-5", icon: "🕊️", title: "Win Any Argument Pass", desc: "Instant victory in any debate with Ebenezer. No questions asked!" },
+  { id: "coupon-6", icon: "🎬", title: "Synced Virtual Movie Night", desc: "Clara picks the movie, snacks ready, no complaints from Ebenezer!" }
+];
+
+// Telepathy Quiz Questions
+const QUIZ_QUESTIONS = [
+  {
+    q: "Who is guaranteed to take longer getting ready for a date?",
+    options: ["Ebenezer 🧔🏾‍♂️", "Clara 👸🏽", "Both are equally guilty 🙈"],
+    verdicts: [
+      "Ebenezer admits he takes time to look sharp for his Queen!",
+      "Clara takes her time because perfection can't be rushed! ✨",
+      "Soulmate telepathy! You both know you're equally dramatic! 💫"
+    ]
+  },
+  {
+    q: "Who is the bigger baby when they catch a mild cold?",
+    options: ["Ebenezer 🧔🏾‍♂️", "Clara 👸🏽", "Both need 24/7 royal pampering 🧸"],
+    verdicts: [
+      "Ebenezer needs Clara's special nursing soup ASAP!",
+      "Clara requires non-stop cuddles and forehead kisses!",
+      "Certified drama duo! You need a hospital for a sneeze! 😂"
+    ]
+  },
+  {
+    q: "Who fell in love first?",
+    options: ["Ebenezer 🧔🏾‍♂️", "Clara 👸🏽", "It hit us at the exact same instant ⚡"],
+    verdicts: [
+      "Ebenezer was head over heels from day one!",
+      "Clara knew he was the one from the very start!",
+      "A true fairytale match! Struck by Cupid together! 💖"
+    ]
+  },
+  {
+    q: "Who is the notorious blanket thief during sleep?",
+    options: ["Ebenezer 🧔🏾‍♂️", "Clara 👸🏽", "The bed is a full-blown combat zone 🥋"],
+    verdicts: [
+      "Ebenezer rolls like a burrito and leaves Clara in the cold!",
+      "Clara steals 98% of the duvet and looks adorable doing it!",
+      "We definitely need two blankets when we reunite! 🥶"
+    ]
+  },
+  {
+    q: "Who is undeniably the cuter one in this relationship?",
+    options: ["Ebenezer 🧔🏾‍♂️", "Clara 👸🏽", "Together we are an unstoppable hot duo 🔥"],
+    verdicts: [
+      "Ebenezer gets bonus points for confidence! 😎",
+      "Clara is undefeated in pure beauty and charm! 👸🏽",
+      "Correct answer! Power couple energy right here! 🥂✨"
+    ]
+  }
+];
+
+// Wheel Rewards
+const WHEEL_REWARDS = [
+  "Video Dinner Date 🍕 (Ebenezer orders for Clara)",
+  "Truth or Dare Night 🎭 (No skipping allowed!)",
+  "Serenade Song 🎶 (Ebenezer sings Clara's favorite track)",
+  "30-Min Full Massage Ticket 💆 (Redeemable on reunion day)",
+  "Movie Monarch 🎬 (Clara picks the film, zero complaints)",
+  "Deep Secrets Hour 🤫 (Ask any question, 100% honesty)"
+];
+
+// Constellation Secret Promises
+const STAR_PROMISES = [
+  "Star of Loyalty 🌟: 'I promise to stand by you in every storm and celebrate every victory.'",
+  "Star of Laughter 💫: 'I promise to never let a day pass without finding a reason to make you laugh.'",
+  "Star of Safety 🛡️: 'I promise my arms will forever be your safest haven on earth.'",
+  "Star of Reunion ✈️: 'Every day apart is just one step closer to our forever home together.'",
+  "Star of Passion 🔥: 'I fall in love with you anew with every sunrise.'",
+  "Star of Eternity 💍: 'You are my yesterday, my today, and all of my tomorrows.'"
+];
+
+// State Management
+let myRole = "ebenezer";
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('role')) {
+  myRole = urlParams.get('role').toLowerCase();
+}
+
+let appState = {
+  config: { ...DEFAULT_CONFIG },
+  redeemedCoupons: {},
+  openedJarCount: 0,
+  musicPlaying: false,
+  peerConnected: false,
+  quizIndex: 0,
+  myQuizAnswer: null,
+  partnerQuizAnswer: null,
+  batteryPercent: 98,
+  wheelSpinning: false
+};
+
+// --------------------------------------------------------------------------
+// WebRTC & BroadcastChannel Sync
+// --------------------------------------------------------------------------
+const broadcastChannel = new BroadcastChannel('ebenezer_clara_love_channel');
+let peer = null;
+let peerConn = null;
+
+const ROOM_PREFIX = "love-ebcl-room-2026-";
+const myPeerId = `${ROOM_PREFIX}${myRole}`;
+const targetPeerId = `${ROOM_PREFIX}${myRole === 'ebenezer' ? 'clara' : 'ebenezer'}`;
+
+function initNetworking() {
+  updateSyncStatusUI(false, `Connecting to ${myRole === 'ebenezer' ? 'Clara' : 'Ebenezer'}...`);
+
+  broadcastChannel.onmessage = (event) => {
+    handleIncomingMessage(event.data);
+  };
+
+  if (typeof Peer !== 'undefined') {
+    try {
+      peer = new Peer(myPeerId, {
+        debug: 1,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:global.stun.twilio.com:3478' }
+          ]
+        }
+      });
+
+      peer.on('open', () => tryConnectToPartner());
+      peer.on('connection', (conn) => setupPeerConnection(conn));
+      peer.on('error', (err) => {
+        if (err.type === 'unavailable-id') {
+          updateSyncStatusUI(true, `Synced with ${myRole === 'ebenezer' ? 'Clara' : 'Ebenezer'} (Live)`);
+        }
+      });
+    } catch (e) {}
+  }
+
+  setInterval(() => {
+    if (!appState.peerConnected && peer && !peer.destroyed) {
+      tryConnectToPartner();
+    }
+  }, 4000);
+}
+
+function tryConnectToPartner() {
+  if (!peer || peer.destroyed) return;
+  const conn = peer.connect(targetPeerId, { reliable: true });
+  setupPeerConnection(conn);
+}
+
+function setupPeerConnection(conn) {
+  peerConn = conn;
+
+  conn.on('open', () => {
+    appState.peerConnected = true;
+    const partnerName = myRole === 'ebenezer' ? 'Clara' : 'Ebenezer';
+    updateSyncStatusUI(true, `Connected to ${partnerName} 💖`);
+    triggerConfetti(0.5, 0.2);
+    sendNetworkPacket({ type: 'hello', sender: myRole });
+  });
+
+  conn.on('data', (data) => handleIncomingMessage(data));
+
+  conn.on('close', () => {
+    appState.peerConnected = false;
+    const partnerName = myRole === 'ebenezer' ? 'Clara' : 'Ebenezer';
+    updateSyncStatusUI(false, `Waiting for ${partnerName} to connect...`);
+  });
+}
+
+function sendNetworkPacket(packet) {
+  if (peerConn && peerConn.open) {
+    try { peerConn.send(packet); } catch (e) {}
+  }
+  try { broadcastChannel.postMessage(packet); } catch (e) {}
+}
+
+function handleIncomingMessage(data) {
+  if (!data || data.sender === myRole) return;
+
+  const partnerName = myRole === 'ebenezer' ? 'Clara' : 'Ebenezer';
+
+  switch (data.type) {
+    case 'hello':
+      updateSyncStatusUI(true, `Connected to ${partnerName} 💖`);
+      break;
+
+    case 'heartbeat_start':
+      onReceivePartnerHeartbeatStart();
+      break;
+
+    case 'heartbeat_stop':
+      onReceivePartnerHeartbeatStop();
+      break;
+
+    case 'nudge':
+      onReceiveNudge(data.nudgeType);
+      break;
+
+    case 'quiz_choice':
+      appState.partnerQuizAnswer = data.choiceIndex;
+      evaluateQuizAnswers();
+      break;
+
+    case 'quiz_next':
+      appState.quizIndex = data.nextIndex;
+      appState.myQuizAnswer = null;
+      appState.partnerQuizAnswer = null;
+      renderQuizQuestion();
+      break;
+
+    case 'battery_charge':
+      applyBatteryCharge(data.percent, false);
+      break;
+
+    case 'wheel_spin':
+      executeWheelSpin(data.rotation, data.rewardIndex, false);
+      break;
+
+    case 'coupon_redeemed':
+      appState.redeemedCoupons[data.couponId] = new Date().toISOString();
+      saveCoupons();
+      renderCoupons();
+      break;
+  }
+}
+
+function updateSyncStatusUI(connected, text) {
+  const syncDot = document.getElementById('syncDot');
+  const syncText = document.getElementById('syncStatusText');
+  const partnerStatus = document.getElementById(myRole === 'ebenezer' ? 'claraStatus' : 'ebenezerStatus');
+
+  if (syncDot) {
+    if (connected) syncDot.classList.add('connected');
+    else syncDot.classList.remove('connected');
+  }
+  if (syncText) syncText.textContent = text;
+  if (partnerStatus) {
+    partnerStatus.textContent = connected ? 'Online & Linked 💕' : 'Waiting for connection...';
+  }
+}
+
+// --------------------------------------------------------------------------
+// WOW FEATURE 1: Shared Love Battery
+// --------------------------------------------------------------------------
+window.chargeLoveBattery = function() {
+  let newPercent = Math.min(100, appState.batteryPercent + 2);
+  applyBatteryCharge(newPercent, true);
+};
+
+function applyBatteryCharge(percent, broadcast = false) {
+  appState.batteryPercent = percent;
+  const fill = document.getElementById('batteryFill');
+  const percentText = document.getElementById('batteryPercent');
+  const statusText = document.getElementById('batteryStatusText');
+
+  if (fill) fill.style.width = `${percent}%`;
+  if (percentText) percentText.textContent = `${percent}%`;
+  if (statusText) statusText.textContent = "⚡ Supercharged by " + (myRole === 'ebenezer' ? 'Ebenezer' : 'Clara') + "!";
+
+  triggerSparklesAtElement(document.getElementById('chargeHeartBtn'));
+  playSoundEffect(523.25, 0.15, 'sine');
+  setTimeout(() => playSoundEffect(659.25, 0.2, 'sine'), 80);
+
+  if (broadcast) {
+    sendNetworkPacket({ type: 'battery_charge', percent: percent, sender: myRole });
+  }
+}
+
+// --------------------------------------------------------------------------
+// WOW FEATURE 2: 3D Flip Polaroid Gallery
+// --------------------------------------------------------------------------
+window.flipPolaroid = function(cardEl) {
+  cardEl.classList.toggle('flipped');
+  playSoundEffect(350, 0.1, 'triangle');
+};
+
+// --------------------------------------------------------------------------
+// WOW FEATURE 3: Date Night Fortune Wheel
+// --------------------------------------------------------------------------
+let wheelRotation = 0;
+
+window.spinRomanticWheel = function() {
+  if (appState.wheelSpinning) return;
+  appState.wheelSpinning = true;
+
+  const btn = document.getElementById('spinWheelBtn');
+  btn.disabled = true;
+
+  const randomExtraRotations = 5 + Math.floor(Math.random() * 4);
+  const randomSegment = Math.floor(Math.random() * 6);
+  // Each segment is 60deg (360 / 6)
+  const segmentDegree = 60;
+  const targetDegree = randomExtraRotations * 360 + (randomSegment * segmentDegree) + 30;
+
+  wheelRotation += targetDegree;
+  executeWheelSpin(wheelRotation, randomSegment, true);
+};
+
+function executeWheelSpin(rotation, rewardIndex, broadcast = false) {
+  const spinner = document.getElementById('romanticWheel');
+  const resultBox = document.getElementById('wheelResult');
+  const resultText = document.getElementById('wheelResultText');
+  const btn = document.getElementById('spinWheelBtn');
+
+  resultBox.style.display = 'none';
+  spinner.style.transform = `rotate(${rotation}deg)`;
+
+  // Play ticks
+  let tickCount = 0;
+  const tickInterval = setInterval(() => {
+    playSoundEffect(600, 0.05, 'triangle');
+    tickCount++;
+    if (tickCount > 20) clearInterval(tickInterval);
+  }, 160);
+
+  setTimeout(() => {
+    appState.wheelSpinning = false;
+    btn.disabled = false;
+    resultBox.style.display = 'block';
+    resultText.textContent = `🎉 Outcome: ${WHEEL_REWARDS[rewardIndex]}`;
+    triggerMassiveConfetti();
+    playSoundEffect(523.25, 0.25, 'sine');
+    setTimeout(() => playSoundEffect(783.99, 0.35, 'sine'), 150);
+  }, 4100);
+
+  if (broadcast) {
+    sendNetworkPacket({ type: 'wheel_spin', rotation: rotation, rewardIndex: rewardIndex, sender: myRole });
+  }
+}
+
+// --------------------------------------------------------------------------
+// WOW FEATURE 4: Interactive Star Constellation
+// --------------------------------------------------------------------------
+const starCanvas = document.getElementById('starMapCanvas');
+const starCtx = starCanvas?.getContext('2d');
+let stars = [];
+
+function initConstellation() {
+  if (!starCanvas || !starCtx) return;
+  const rect = starCanvas.parentElement.getBoundingClientRect();
+  starCanvas.width = rect.width;
+  starCanvas.height = rect.height;
+
+  stars = [
+    { x: rect.width * 0.2, y: rect.height * 0.35, label: "E", promise: STAR_PROMISES[0] },
+    { x: rect.width * 0.35, y: rect.height * 0.25, label: "✨", promise: STAR_PROMISES[1] },
+    { x: rect.width * 0.5, y: rect.height * 0.5, label: "💖", promise: STAR_PROMISES[2] },
+    { x: rect.width * 0.65, y: rect.height * 0.25, label: "✨", promise: STAR_PROMISES[3] },
+    { x: rect.width * 0.8, y: rect.height * 0.4, label: "C", promise: STAR_PROMISES[4] },
+    { x: rect.width * 0.5, y: rect.height * 0.8, label: "💍", promise: STAR_PROMISES[5] }
+  ];
+
+  drawConstellation();
+}
+
+function drawConstellation(hoveredIndex = -1) {
+  if (!starCtx || !starCanvas) return;
+  starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+
+  // Draw background star dust
+  starCtx.fillStyle = "rgba(255, 255, 255, 0.15)";
+  for (let i = 0; i < 40; i++) {
+    const sx = (i * 123) % starCanvas.width;
+    const sy = (i * 87) % starCanvas.height;
+    starCtx.fillRect(sx, sy, 1.5, 1.5);
+  }
+
+  // Draw constellation connecting lines
+  starCtx.strokeStyle = "rgba(56, 189, 248, 0.35)";
+  starCtx.lineWidth = 1.8;
+  starCtx.setLineDash([4, 4]);
+  starCtx.beginPath();
+  for (let i = 0; i < stars.length - 1; i++) {
+    starCtx.moveTo(stars[i].x, stars[i].y);
+    starCtx.lineTo(stars[i + 1].x, stars[i + 1].y);
+  }
+  // Close to bottom star
+  starCtx.lineTo(stars[2].x, stars[2].y);
+  starCtx.stroke();
+  starCtx.setLineDash([]);
+
+  // Draw glowing stars
+  stars.forEach((s, idx) => {
+    const isHovered = idx === hoveredIndex;
+    const radius = isHovered ? 9 : 5;
+
+    // Outer glow
+    starCtx.beginPath();
+    starCtx.arc(s.x, s.y, radius * 2.5, 0, Math.PI * 2);
+    starCtx.fillStyle = isHovered ? "rgba(255, 77, 109, 0.4)" : "rgba(56, 189, 248, 0.25)";
+    starCtx.fill();
+
+    // Center star
+    starCtx.beginPath();
+    starCtx.arc(s.x, s.y, radius, 0, Math.PI * 2);
+    starCtx.fillStyle = isHovered ? "#ff4d6d" : "#bae6fd";
+    starCtx.fill();
+
+    // Label
+    starCtx.fillStyle = "#ffffff";
+    starCtx.font = "12px Outfit";
+    starCtx.fillText(s.label, s.x + 12, s.y - 10);
+  });
+}
+
+starCanvas?.addEventListener('mousemove', (e) => {
+  const rect = starCanvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  let hoveredIdx = -1;
+  stars.forEach((s, idx) => {
+    const dist = Math.hypot(s.x - mx, s.y - my);
+    if (dist < 18) hoveredIdx = idx;
+  });
+
+  drawConstellation(hoveredIdx);
+  if (hoveredIdx !== -1) {
+    document.getElementById('starTooltip').textContent = stars[hoveredIdx].promise;
+  }
+});
+
+starCanvas?.addEventListener('click', (e) => {
+  const rect = starCanvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  stars.forEach((s) => {
+    const dist = Math.hypot(s.x - mx, s.y - my);
+    if (dist < 22) {
+      document.getElementById('starTooltip').textContent = s.promise;
+      triggerConfetti(0.5, 0.7);
+      playSoundEffect(783.99, 0.2, 'sine');
+    }
+  });
+});
+
+window.addEventListener('resize', initConstellation);
+
+// --------------------------------------------------------------------------
+// WOW FEATURE 5: Cinematic Romantic Theater Experience
+// --------------------------------------------------------------------------
+const CINEMA_SLIDES = [
+  { title: "To Clara, My Universe", text: "Out of 8 billion souls on this earth, my heart walked across the stars and found you." },
+  { title: "Miles Mean Nothing", text: "Even oceans and time zones cannot dim the fire, warmth, and peace you brought into my life." },
+  { title: "Every Single Day", text: "My morning begins with your smile in my mind, and my night ends listening to you breathe peacefully." },
+  { title: "The Next Chapter", text: "I cannot wait for the moment our eyes meet at arrivals, our hands interlock, and distance becomes history." },
+  { title: "Forever & Always", text: "I love you with everything I am, Clara. With all my heart, Ebenezer. 💍💖" }
+];
+
+let cinemaIndex = 0;
+let cinemaInterval = null;
+
+window.startCinematicMode = function() {
+  const overlay = document.getElementById('cinematicOverlay');
+  overlay.classList.add('active');
+  cinemaIndex = 0;
+  displayCinemaSlide();
+
+  // Play romantic music automatically
+  if (!appState.musicPlaying) toggleRomanticMusic();
+
+  cinemaInterval = setInterval(() => {
+    cinemaIndex = (cinemaIndex + 1) % CINEMA_SLIDES.length;
+    displayCinemaSlide();
+    if (cinemaIndex === CINEMA_SLIDES.length - 1) {
+      triggerMassiveConfetti();
+    }
+  }, 5000);
+};
+
+function displayCinemaSlide() {
+  const slide = CINEMA_SLIDES[cinemaIndex];
+  const title = document.getElementById('cinemaTitle');
+  const text = document.getElementById('cinemaText');
+  const progress = document.getElementById('cinemaProgress');
+
+  title.style.opacity = '0';
+  text.style.opacity = '0';
+
+  setTimeout(() => {
+    title.textContent = slide.title;
+    text.textContent = `"${slide.text}"`;
+    title.style.opacity = '1';
+    text.style.opacity = '1';
+  }, 400);
+
+  if (progress) {
+    progress.style.width = `${((cinemaIndex + 1) / CINEMA_SLIDES.length) * 100}%`;
+  }
+
+  triggerConfetti(0.5, 0.4);
+}
+
+window.stopCinematicMode = function() {
+  document.getElementById('cinematicOverlay').classList.remove('active');
+  clearInterval(cinemaInterval);
+};
+
+document.getElementById('cinematicBtn')?.addEventListener('click', startCinematicMode);
+
+// --------------------------------------------------------------------------
+// Real-Time Heartbeat Hold Pad
+// --------------------------------------------------------------------------
+const heartbeatPad = document.getElementById('heartbeatPad');
+const partnerPulseNotice = document.getElementById('partnerPulseNotice');
+const partnerPulseMsg = document.getElementById('partnerPulseMsg');
+let heartbeatInterval = null;
+let partnerPulseSoundInterval = null;
+
+function startSendingHeartbeat() {
+  heartbeatPad.classList.add('holding');
+  document.getElementById('padStatus').textContent = "Pulsing to " + (myRole === 'ebenezer' ? 'Clara' : 'Ebenezer') + "...";
+  sendNetworkPacket({ type: 'heartbeat_start', sender: myRole });
+
+  playHeartbeatSound();
+  heartbeatInterval = setInterval(playHeartbeatSound, 800);
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+}
+
+function stopSendingHeartbeat() {
+  heartbeatPad.classList.remove('holding');
+  document.getElementById('padStatus').textContent = "Hold to Send Heartbeat";
+  clearInterval(heartbeatInterval);
+  sendNetworkPacket({ type: 'heartbeat_stop', sender: myRole });
+}
+
+function onReceivePartnerHeartbeatStart() {
+  const partnerName = myRole === 'ebenezer' ? 'Clara' : 'Ebenezer';
+  partnerPulseNotice.classList.add('active');
+  partnerPulseMsg.textContent = `${partnerName} is holding your heart right now... 💓`;
+
+  playHeartbeatSound();
+  partnerPulseSoundInterval = setInterval(playHeartbeatSound, 800);
+  if (navigator.vibrate) navigator.vibrate([120, 60, 120]);
+}
+
+function onReceivePartnerHeartbeatStop() {
+  partnerPulseNotice.classList.remove('active');
+  clearInterval(partnerPulseSoundInterval);
+}
+
+if (heartbeatPad) {
+  heartbeatPad.addEventListener('mousedown', startSendingHeartbeat);
+  window.addEventListener('mouseup', () => {
+    if (heartbeatPad.classList.contains('holding')) stopSendingHeartbeat();
+  });
+  heartbeatPad.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startSendingHeartbeat();
+  });
+  heartbeatPad.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    stopSendingHeartbeat();
+  });
+}
+
+function playHeartbeatSound() {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(65, now);
+    osc1.frequency.exponentialRampToValueAtTime(35, now + 0.12);
+    gain1.gain.setValueAtTime(0.3, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.12);
+
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(80, now + 0.16);
+    osc2.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+    gain2.gain.setValueAtTime(0.35, now + 0.16);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.16);
+    osc2.stop(now + 0.3);
+  } catch (e) {}
+}
+
+// --------------------------------------------------------------------------
+// Playful Nudges
+// --------------------------------------------------------------------------
+window.sendRealtimeNudge = function(type) {
+  sendNetworkPacket({ type: 'nudge', nudgeType: type, sender: myRole });
+  triggerConfetti(0.5, 0.7);
+  playSoundEffect(587.33, 0.15, 'triangle');
+  alertPopupFeedback(type);
+};
+
+function alertPopupFeedback() {
+  const partner = myRole === 'ebenezer' ? 'Clara' : 'Ebenezer';
+  const toast = document.createElement('div');
+  toast.style.position = 'fixed';
+  toast.style.bottom = '80px';
+  toast.style.left = '50%';
+  toast.style.transform = 'translateX(-50%)';
+  toast.style.background = 'rgba(20, 8, 28, 0.95)';
+  toast.style.border = '1px solid var(--rose-primary)';
+  toast.style.color = '#fff';
+  toast.style.padding = '0.7rem 1.4rem';
+  toast.style.borderRadius = '9999px';
+  toast.style.zIndex = '999';
+  toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
+  toast.style.fontSize = '0.9rem';
+  toast.innerHTML = `Sent to ${partner}! 🚀`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+function onReceiveNudge(type) {
+  const sender = myRole === 'ebenezer' ? 'Clara' : 'Ebenezer';
+  const overlay = document.getElementById('nudgeOverlay');
+  const icon = document.getElementById('nudgeModalIcon');
+  const title = document.getElementById('nudgeModalTitle');
+  const text = document.getElementById('nudgeModalText');
+
+  if (type === 'kiss') {
+    spawnKissCascade();
+    playSoundEffect(659.25, 0.2, 'sine');
+    setTimeout(() => playSoundEffect(880.00, 0.3, 'sine'), 100);
+    icon.textContent = "💋";
+    title.textContent = `Kiss Attack From ${sender}!`;
+    text.textContent = `${sender} just showered your screen with unconditional kisses!`;
+  } else if (type === 'siren') {
+    document.body.classList.add('siren-active');
+    playEmergencySiren();
+    icon.textContent = "🚨";
+    title.textContent = "CUDDLE EMERGENCY!";
+    text.textContent = `CRITICAL ALERT: ${sender}'s cuddle levels are at 0%! Immediate hug delivery requested!`;
+  } else if (type === 'tickle') {
+    document.body.classList.add('screen-shake');
+    setTimeout(() => document.body.classList.remove('screen-shake'), 1500);
+    playSoundEffect(400, 0.1, 'sawtooth');
+    setTimeout(() => playSoundEffect(600, 0.15, 'sawtooth'), 120);
+    icon.textContent = "🪶";
+    title.textContent = "Virtual Tickle Alert!";
+    text.textContent = `${sender} is tickling you across the miles! Stop squirming! 🙈`;
+  } else if (type === 'drama') {
+    icon.textContent = "🎭";
+    title.textContent = "Drama Complaint Filed!";
+    text.textContent = `Official complaint from ${sender}: "Stop looking so ridiculously pretty, I cannot concentrate on anything!"`;
+  }
+
+  overlay.classList.add('active');
+}
+
+window.dismissNudgeOverlay = function() {
+  document.getElementById('nudgeOverlay').classList.remove('active');
+  document.body.classList.remove('siren-active');
+  document.body.classList.remove('screen-shake');
+};
+
+function spawnKissCascade() {
+  for (let i = 0; i < 35; i++) {
+    setTimeout(() => {
+      const p = new Particle(Math.random() * window.innerWidth, window.innerHeight + 20, true);
+      p.char = ['💋', '😘', '💖', '🥰'][Math.floor(Math.random() * 4)];
+      p.size = Math.random() * 24 + 20;
+      p.speedY = -(Math.random() * 5 + 3);
+      particles.push(p);
+    }, i * 60);
+  }
+}
+
+function playEmergencySiren() {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(440, ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(880, ctx.currentTime + 0.3);
+    osc.frequency.linearRampToValueAtTime(440, ctx.currentTime + 0.6);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 1.2);
+  } catch (e) {}
+}
+
+// --------------------------------------------------------------------------
+// Telepathy Game
+// --------------------------------------------------------------------------
+function renderQuizQuestion() {
+  const qData = QUIZ_QUESTIONS[appState.quizIndex];
+  document.getElementById('quizQuestionIndex').textContent = `Question ${appState.quizIndex + 1} of ${QUIZ_QUESTIONS.length}`;
+  document.getElementById('quizQuestionText').textContent = qData.q;
+
+  const grid = document.getElementById('quizOptionsGrid');
+  grid.innerHTML = qData.options.map((opt, idx) => `
+    <button class="quiz-opt-btn ${appState.myQuizAnswer === idx ? 'selected' : ''}" onclick="submitQuizAnswer(${idx})">
+      ${opt}
+    </button>
+  `).join('');
+
+  document.getElementById('quizRevealBox').style.display = 'none';
+}
+
+window.submitQuizAnswer = function(idx) {
+  appState.myQuizAnswer = idx;
+  renderQuizQuestion();
+
+  sendNetworkPacket({
+    type: 'quiz_choice',
+    choiceIndex: idx,
+    questionIndex: appState.quizIndex,
+    sender: myRole
+  });
+
+  evaluateQuizAnswers();
+};
+
+function evaluateQuizAnswers() {
+  if (appState.myQuizAnswer === null) return;
+
+  const revealBox = document.getElementById('quizRevealBox');
+  const ebenezerChoice = document.getElementById('ebenezerChoice');
+  const claraChoice = document.getElementById('claraChoice');
+  const revealVerdict = document.getElementById('revealVerdict');
+  const qData = QUIZ_QUESTIONS[appState.quizIndex];
+
+  revealBox.style.display = 'flex';
+
+  const myChoiceText = qData.options[appState.myQuizAnswer];
+  if (myRole === 'ebenezer') {
+    ebenezerChoice.textContent = myChoiceText;
+    claraChoice.textContent = appState.partnerQuizAnswer !== null ? qData.options[appState.partnerQuizAnswer] : "Waiting for Clara...";
+  } else {
+    claraChoice.textContent = myChoiceText;
+    ebenezerChoice.textContent = appState.partnerQuizAnswer !== null ? qData.options[appState.partnerQuizAnswer] : "Waiting for Ebenezer...";
+  }
+
+  if (appState.partnerQuizAnswer !== null) {
+    if (appState.myQuizAnswer === appState.partnerQuizAnswer) {
+      revealVerdict.textContent = `🎯 100% TELEPATHY MATCH! "${qData.verdicts[appState.myQuizAnswer]}"`;
+      triggerConfetti(0.5, 0.5);
+      playSoundEffect(523.25, 0.2, 'sine');
+      setTimeout(() => playSoundEffect(659.25, 0.25, 'sine'), 120);
+    } else {
+      revealVerdict.textContent = `😂 Hahaha! A disagreement! Discussion required on our next call!`;
+    }
+  } else {
+    revealVerdict.textContent = "Answer submitted! Waiting for your love to pick...";
+  }
+}
+
+window.nextQuizQuestion = function() {
+  const nextIdx = (appState.quizIndex + 1) % QUIZ_QUESTIONS.length;
+  appState.quizIndex = nextIdx;
+  appState.myQuizAnswer = null;
+  appState.partnerQuizAnswer = null;
+  renderQuizQuestion();
+
+  sendNetworkPacket({
+    type: 'quiz_next',
+    nextIndex: nextIdx,
+    sender: myRole
+  });
+};
+
+// --------------------------------------------------------------------------
+// Dual Clock Under The Same Moon
+// --------------------------------------------------------------------------
+function updateDualTimes() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const ebEl = document.getElementById('ebenezerTime');
+  const clEl = document.getElementById('claraTime');
+  if (ebEl) ebEl.textContent = timeStr;
+  if (clEl) clEl.textContent = timeStr;
+}
+setInterval(updateDualTimes, 1000);
+updateDualTimes();
+
+// --------------------------------------------------------------------------
+// Relationship Ticking Counter
+// --------------------------------------------------------------------------
+function updateRelationshipCounter() {
+  const startDate = new Date(appState.config.startDate + "T00:00:00");
+  const now = new Date();
+  let diffMs = now - startDate;
+
+  if (isNaN(diffMs) || diffMs < 0) diffMs = 0;
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+  const seconds = Math.floor((diffMs / 1000) % 60);
+
+  const daysEl = document.getElementById('daysCount');
+  const hoursEl = document.getElementById('hoursCount');
+  const minsEl = document.getElementById('minutesCount');
+  const secsEl = document.getElementById('secondsCount');
+
+  if (daysEl) daysEl.textContent = days.toLocaleString();
+  if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+  if (minsEl) minsEl.textContent = String(minutes).padStart(2, '0');
+  if (secsEl) secsEl.textContent = String(seconds).padStart(2, '0');
+}
+setInterval(updateRelationshipCounter, 1000);
+
+// --------------------------------------------------------------------------
+// Envelope & Wax Seal
+// --------------------------------------------------------------------------
+const envelope = document.getElementById('envelope');
+function toggleEnvelope() {
+  const isOpen = envelope.classList.toggle('open');
+  if (isOpen) {
+    triggerConfetti(0.5, 0.6);
+    playSoundEffect(523.25, 0.2, 'sine');
+    setTimeout(() => playSoundEffect(659.25, 0.3, 'sine'), 120);
+  }
+}
+if (envelope) envelope.addEventListener('click', toggleEnvelope);
+
+// --------------------------------------------------------------------------
+// Reasons Jar
+// --------------------------------------------------------------------------
+let lastReasonIndex = -1;
+function pullRandomReason() {
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * LOVE_REASONS.length);
+  } while (randomIndex === lastReasonIndex && LOVE_REASONS.length > 1);
+
+  lastReasonIndex = randomIndex;
+  const quoteText = document.getElementById('quoteText');
+  const quoteCounter = document.getElementById('quoteCounter');
+
+  quoteText.style.opacity = '0';
+  quoteText.style.transform = 'translateY(10px)';
+
+  setTimeout(() => {
+    quoteText.textContent = `"${LOVE_REASONS[randomIndex]}"`;
+    quoteText.style.opacity = '1';
+    quoteText.style.transform = 'translateY(0)';
+  }, 250);
+
+  appState.openedJarCount++;
+  localStorage.setItem('love_app_jar_count', appState.openedJarCount.toString());
+  if (quoteCounter) {
+    quoteCounter.textContent = `Tokens opened: ${appState.openedJarCount}`;
+  }
+
+  playMusicBoxNote(587.33);
+  setTimeout(() => playMusicBoxNote(880.00), 100);
+  triggerSparklesAtElement(document.getElementById('jarCard'));
+}
+
+document.getElementById('pullReasonBtn')?.addEventListener('click', pullRandomReason);
+document.getElementById('jarIconBtn')?.addEventListener('click', pullRandomReason);
+
+// --------------------------------------------------------------------------
+// Coupons
+// --------------------------------------------------------------------------
+function renderCoupons() {
+  const container = document.getElementById('couponsGrid');
+  if (!container) return;
+
+  container.innerHTML = COUPONS.map(coupon => {
+    const isRedeemed = !!appState.redeemedCoupons[coupon.id];
+    return `
+      <div class="coupon-card ${isRedeemed ? 'redeemed' : ''}" id="${coupon.id}">
+        <div class="coupon-header">
+          <span class="coupon-icon">${coupon.icon}</span>
+          <h4 class="coupon-title">${coupon.title}</h4>
+        </div>
+        <p class="coupon-desc">${coupon.desc}</p>
+        <button class="coupon-btn" onclick="redeemCoupon('${coupon.id}')">
+          ${isRedeemed ? 'Already Redeemed ❤️' : 'Claim Coupon ✨'}
+        </button>
+        ${isRedeemed ? '<div class="redeemed-stamp">REDEEMED ✨</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+window.redeemCoupon = function(id) {
+  if (appState.redeemedCoupons[id]) return;
+
+  appState.redeemedCoupons[id] = new Date().toISOString();
+  saveCoupons();
+  renderCoupons();
+
+  sendNetworkPacket({ type: 'coupon_redeemed', couponId: id, sender: myRole });
+
+  triggerConfetti(0.5, 0.7);
+  playSoundEffect(440, 0.15, 'triangle');
+  setTimeout(() => playSoundEffect(660, 0.25, 'sine'), 100);
+};
+
+function saveCoupons() {
+  localStorage.setItem('love_app_coupons', JSON.stringify(appState.redeemedCoupons));
+}
+
+// --------------------------------------------------------------------------
+// Runaway "No" Button
+// --------------------------------------------------------------------------
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const celebrationMsg = document.getElementById('celebrationMsg');
+
+function dodgeNoButton() {
+  const maxOffset = 140;
+  const randomX = (Math.random() - 0.5) * maxOffset * 2;
+  const randomY = (Math.random() - 0.5) * 80;
+
+  noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  playSoundEffect(300 + Math.random() * 200, 0.1, 'sawtooth');
+}
+
+if (noBtn) {
+  noBtn.addEventListener('mouseenter', dodgeNoButton);
+  noBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    dodgeNoButton();
+  });
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    dodgeNoButton();
+  });
+}
+
+if (yesBtn) {
+  yesBtn.addEventListener('click', () => {
+    triggerMassiveConfetti();
+    if (celebrationMsg) celebrationMsg.style.display = 'block';
+    yesBtn.innerHTML = "I KNEW IT! Forever with Ebenezer! 💍💖";
+    if (noBtn) noBtn.style.display = 'none';
+
+    if (!appState.musicPlaying) toggleRomanticMusic();
+  });
+}
+
+// --------------------------------------------------------------------------
+// Audio Synthesizer
+// --------------------------------------------------------------------------
+let audioCtx = null;
+let melodyInterval = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playMusicBoxNote(freq, duration = 0.8) {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1400, ctx.currentTime);
+
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (err) {}
+}
+
+function playSoundEffect(freq, duration, type = 'sine') {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {}
+}
+
+const MELODY = [
+  587.33, 739.99, 880.00, 1174.66,
+  440.00, 554.37, 659.25, 880.00,
+  493.88, 587.33, 739.99, 987.77,
+  369.99, 440.00, 554.37, 739.99,
+  392.00, 493.88, 587.33, 783.99,
+  293.66, 369.99, 440.00, 587.33,
+  392.00, 493.88, 587.33, 783.99,
+  440.00, 554.37, 659.25, 880.00
+];
+
+let noteIdx = 0;
+function toggleRomanticMusic() {
+  const btn = document.getElementById('musicToggleBtn');
+  const statusText = document.getElementById('musicStatusText');
+
+  if (appState.musicPlaying) {
+    clearInterval(melodyInterval);
+    appState.musicPlaying = false;
+    btn.classList.remove('playing');
+    statusText.textContent = "Play Melody";
+  } else {
+    getAudioContext();
+    appState.musicPlaying = true;
+    btn.classList.add('playing');
+    statusText.textContent = "Playing Melody 🎵";
+
+    melodyInterval = setInterval(() => {
+      playMusicBoxNote(MELODY[noteIdx % MELODY.length], 0.9);
+      noteIdx++;
+    }, 450);
+  }
+}
+
+document.getElementById('musicToggleBtn')?.addEventListener('click', toggleRomanticMusic);
+
+// --------------------------------------------------------------------------
+// Confetti Helpers
+// --------------------------------------------------------------------------
+function triggerConfetti(x = 0.5, y = 0.5) {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { x, y },
+      colors: ['#ff4d6d', '#ff758f', '#ffccd5', '#fcd34d', '#ffffff']
+    });
+  }
+}
+
+function triggerMassiveConfetti() {
+  if (typeof confetti !== 'function') return;
+  const count = 220;
+  const defaults = { origin: { y: 0.7 } };
+
+  function fire(particleRatio, opts) {
+    confetti(Object.assign({}, defaults, opts, {
+      particleCount: Math.floor(count * particleRatio)
+    }));
+  }
+
+  fire(0.25, { spread: 26, startVelocity: 55, colors: ['#ff4d6d', '#ff758f'] });
+  fire(0.2, { spread: 60, colors: ['#fcd34d', '#ffffff'] });
+  fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+  fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, colors: ['#e11d48'] });
+  fire(0.1, { spread: 120, startVelocity: 45 });
+}
+
+function triggerSparklesAtElement(el) {
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  triggerConfetti((rect.left + rect.width / 2) / window.innerWidth, (rect.top + rect.height / 2) / window.innerHeight);
+}
+
+// --------------------------------------------------------------------------
+// Ambient Particles Canvas
+// --------------------------------------------------------------------------
+const canvas = document.getElementById('ambientCanvas');
+const ctx = canvas?.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor(x, y, isHeart = false) {
+    this.x = x || Math.random() * canvas.width;
+    this.y = y || canvas.height + Math.random() * 50;
+    this.size = Math.random() * 12 + 8;
+    this.speedY = -(Math.random() * 1.2 + 0.5);
+    this.speedX = (Math.random() - 0.5) * 0.8;
+    this.opacity = Math.random() * 0.5 + 0.3;
+    this.isHeart = isHeart || Math.random() > 0.4;
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.03;
+    this.char = this.isHeart ? ['💖', '💕', '✨', '🌸'][Math.floor(Math.random() * 4)] : '⭐';
+  }
+
+  update() {
+    this.y += this.speedY;
+    this.x += this.speedX;
+    this.rotation += this.rotSpeed;
+    this.opacity -= 0.002;
+  }
+
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, this.opacity);
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.font = `${this.size}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.char, 0, 0);
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < 20; i++) {
+  const p = new Particle();
+  p.y = Math.random() * canvas.height;
+  particles.push(p);
+}
+
+function animateParticles() {
+  if (!ctx || !canvas) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (particles.length < 30 && Math.random() < 0.1) {
+    particles.push(new Particle());
+  }
+
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.update();
+    p.draw();
+    if (p.opacity <= 0 || p.y < -20) particles.splice(i, 1);
+  }
+  requestAnimationFrame(animateParticles);
+}
+requestAnimationFrame(animateParticles);
+
+window.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('.modal-overlay') || e.target.closest('.nudge-overlay') || e.target.closest('.cinematic-overlay')) return;
+  for (let i = 0; i < 5; i++) {
+    const p = new Particle(e.clientX, e.clientY, true);
+    p.speedX = (Math.random() - 0.5) * 4;
+    p.speedY = -(Math.random() * 3 + 1);
+    p.opacity = 0.9;
+    particles.push(p);
+  }
+});
+
+// --------------------------------------------------------------------------
+// Role Switcher & Sharing Magic Link
+// --------------------------------------------------------------------------
+function updateRoleUI() {
+  const roleLabel = document.getElementById('currentRoleLabel');
+  if (roleLabel) {
+    roleLabel.textContent = myRole === 'ebenezer' ? 'I am Ebenezer 💙' : 'I am Clara 💖';
+  }
+
+  const selectEb = document.getElementById('selectEbenezer');
+  const selectCl = document.getElementById('selectClara');
+  if (selectEb && selectCl) {
+    selectEb.classList.toggle('active', myRole === 'ebenezer');
+    selectCl.classList.toggle('active', myRole === 'clara');
+  }
+
+  const partnerStatus = document.getElementById(myRole === 'ebenezer' ? 'ebenezerStatus' : 'claraStatus');
+  if (partnerStatus) partnerStatus.textContent = 'You (This Device)';
+}
+
+window.toggleRoleModal = function(show = true) {
+  const modal = document.getElementById('roleModal');
+  if (show) modal.classList.add('active');
+  else modal.classList.remove('active');
+};
+
+window.selectRole = function(role) {
+  myRole = role;
+  updateRoleUI();
+  toggleRoleModal(false);
+  initNetworking();
+};
+
+document.getElementById('whoAmIBtn')?.addEventListener('click', () => toggleRoleModal(true));
+
+document.getElementById('shareLinkBtn')?.addEventListener('click', () => {
+  const partnerRole = myRole === 'ebenezer' ? 'clara' : 'ebenezer';
+  const url = new URL(window.location.href);
+  url.searchParams.set('role', partnerRole);
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url.toString()).then(() => {
+      alert(`✨ Magic Link Copied!\n\nSend this link to ${partnerRole === 'clara' ? 'Clara' : 'Ebenezer'}. When she opens it, she will automatically connect to you in real-time! 💖`);
+    });
+  } else {
+    prompt("Copy this link to send to your partner:", url.toString());
+  }
+});
+
+// --------------------------------------------------------------------------
+// Settings Modal
+// --------------------------------------------------------------------------
+const customizeModal = document.getElementById('customizeModal');
+document.getElementById('customizeBtn')?.addEventListener('click', () => customizeModal.classList.add('active'));
+document.getElementById('closeModalBtn')?.addEventListener('click', () => customizeModal.classList.remove('active'));
+
+document.getElementById('saveCustomizationBtn')?.addEventListener('click', () => {
+  const partnerName = document.getElementById('inputPartnerName').value.trim() || DEFAULT_CONFIG.partnerName;
+  const yourName = document.getElementById('inputYourName').value.trim() || DEFAULT_CONFIG.yourName;
+  const startDate = document.getElementById('inputStartDate').value || DEFAULT_CONFIG.startDate;
+  const letterText = document.getElementById('inputLetterText').value.trim() || DEFAULT_CONFIG.letterText;
+
+  appState.config = { partnerName, yourName, startDate, letterText };
+  localStorage.setItem('love_app_config', JSON.stringify(appState.config));
+  customizeModal.classList.remove('active');
+  triggerConfetti();
+});
+
+document.getElementById('resetDefaultsBtn')?.addEventListener('click', () => {
+  appState.config = { ...DEFAULT_CONFIG };
+  localStorage.setItem('love_app_config', JSON.stringify(DEFAULT_CONFIG));
+  customizeModal.classList.remove('active');
+});
+
+// --------------------------------------------------------------------------
+// Initialization
+// --------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const savedCoupons = localStorage.getItem('love_app_coupons');
+  if (savedCoupons) appState.redeemedCoupons = JSON.parse(savedCoupons);
+
+  updateRoleUI();
+  renderCoupons();
+  renderQuizQuestion();
+  updateRelationshipCounter();
+  initNetworking();
+  setTimeout(initConstellation, 300);
+});
+
+</script>
+</body>
+</html>
